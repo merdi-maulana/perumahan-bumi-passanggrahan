@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f9f9fF;
+  --foreground: #151C27;
+  --primary: #096138;
+  --primary-light: #2D7A4F;
+  --surface-low: #F0F3FF;
+  --surface-highest: #DCE2F3;
+  --outline-variant: #BFC9BF;
+  --whatsapp: #25D366;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-surface-low: var(--surface-low);
+  --color-surface-highest: var(--surface-highest);
+  --color-outline-variant: var(--outline-variant);
+  --color-whatsapp: var(--whatsapp);
+  --font-display: var(--font-plus-jakarta-sans);
+  --font-body: var(--font-inter);
+  --animate-fade-in: fadeIn 0.2s ease-out;
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display), sans-serif;
+}
