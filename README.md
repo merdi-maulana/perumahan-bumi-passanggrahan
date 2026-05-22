@@ -1,41 +1,88 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Perumahan Bumi Pasanggrahan
 
-## Getting Started
+Website promosi perumahan (Next.js 16). Semua halaman di-prerender statis — ringan di server dan cepat di browser.
 
-First, run the development server:
+## Persiapan
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Pastikan folder `public/` berisi aset (`images/`, `panorama/`, dll.) sebelum deploy.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy (pilih salah satu)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Opsi A — Hostinger Node.js (disarankan untuk Anda)
 
-## Learn More
+Panduan lengkap: **[HOSTINGER.md](./HOSTINGER.md)**
 
-To learn more about Next.js, take a look at the following resources:
+Ringkasan di hPanel:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Install: `npm ci`
+- Build: `npm run build`
+- Start: `npm run start -- -p $PORT`
+- Node.js: **20**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Opsi B — Vercel (paling mudah, RAM server ~0)
 
-## Deploy on Vercel
+1. Push repo ke GitHub.
+2. Import di [vercel.com](https://vercel.com) → framework **Next.js**.
+3. Region: **Singapore (sin1)** — sudah diset di `vercel.json`.
+4. Deploy. Tidak perlu konfigurasi tambahan.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Opsi C — Hosting statis (Nginx / cPanel / Cloudflare Pages)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-=======
-# perum-bp
-perumahan bumi passanggrahan client
->>>>>>> cc6796040b233a57c88310f9be4408d5a26ff32a
+Tanpa proses Node di server — hanya file HTML/JS/CSS.
+
+```bash
+npm run build:static
+```
+
+Upload isi folder `out/` ke root website. Contoh Nginx:
+
+```nginx
+server {
+    listen 80;
+    server_name domain-anda.com;
+    root /var/www/bumi-passanggrahan/out;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ $uri.html /index.html;
+    }
+}
+```
+
+### Opsi D — VPS / Docker (Node standalone, ~256–512 MB RAM)
+
+```bash
+docker compose up -d --build
+```
+
+Aplikasi berjalan di port **3000**. Batas memori container: **512 MB** (lihat `docker-compose.yml`).
+
+Build manual tanpa Docker:
+
+```bash
+npm run build
+node .next/standalone/server.js
+```
+
+## Optimasi yang sudah diterapkan
+
+- Halaman utama tanpa Three.js (tur 3D dimuat lazy di `/3d/360web`).
+- Cache panjang untuk gambar panorama & aset statis.
+- Gambar WebP/AVIF otomatis (kecuali build statis).
+- Tur virtual: geometri & DPR lebih rendah di mobile.
+- `/test` dinonaktifkan di production.
+
+## Perintah
+
+| Perintah | Keterangan |
+|----------|------------|
+| `npm run dev` | Development |
+| `npm run build` | Build production (standalone) |
+| `npm run build:static` | Build folder `out/` untuk hosting statis |
+| `npm run start` | Jalankan server production |
+| `npm run lint` | ESLint |

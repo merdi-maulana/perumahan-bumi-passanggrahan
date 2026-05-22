@@ -1,7 +1,20 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState, useEffect, useRef } from "react";
-import VirtualTour, { SceneDef } from "@/components/VirtualTour";
+import type { SceneDef } from "@/components/VirtualTour";
+
+const VirtualTour = dynamic(() => import("@/components/VirtualTour"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-screen w-full items-center justify-center bg-zinc-900 text-white">
+      <div className="flex flex-col items-center gap-4">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-emerald-400" />
+        <p className="text-sm font-medium text-white/80">Memuat tur virtual 3D...</p>
+      </div>
+    </div>
+  ),
+});
 
 // Definisikan kategori 3D Virtual Tour
 interface TourCategory {

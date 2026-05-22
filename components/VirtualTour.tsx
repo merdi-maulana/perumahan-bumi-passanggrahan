@@ -58,7 +58,13 @@ class TextureErrorBoundary extends Component<
 }
 
 // Komponen untuk me-render gambar 360 derajat di dalam bola (sphere)
-function Dome({ imagePath }: { imagePath: string }) {
+function Dome({
+  imagePath,
+  segments,
+}: {
+  imagePath: string;
+  segments: [number, number];
+}) {
   const texture = useLoader(PanoramaTextureLoader, imagePath);
   const { gl } = useThree();
 
@@ -70,7 +76,7 @@ function Dome({ imagePath }: { imagePath: string }) {
   
   return (
     <mesh scale={[-1, 1, 1]}>
-      <sphereGeometry args={[500, 60, 40]} />
+      <sphereGeometry args={[500, segments[0], segments[1]]} />
       <meshBasicMaterial map={texture} side={THREE.BackSide} />
     </mesh>
   );
@@ -82,10 +88,13 @@ export default function VirtualTour({ scenes, initialSceneId }: VirtualTourProps
   const [fadeGuide, setFadeGuide] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [dpr, setDpr] = useState(1);
+  const [sphereSegments, setSphereSegments] = useState<[number, number]>([48, 32]);
   const scene = scenes[currentSceneId];
 
   useEffect(() => {
-    setDpr(Math.min(window.devicePixelRatio || 1, 2));
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    setDpr(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
+    setSphereSegments(isMobile ? [32, 24] : [48, 32]);
   }, []);
 
   const dismissGuide = () => {
@@ -226,8 +235,8 @@ export default function VirtualTour({ scenes, initialSceneId }: VirtualTourProps
         camera={{ position: [0, 0, 0.1], fov: 60 }}
         dpr={dpr}
         gl={{
-          antialias: true,
-          powerPreference: 'high-performance',
+          antialias: dpr <= 1.5,
+          powerPreference: "high-performance",
           alpha: false,
         }}
         style={{ width: '100%', height: '100%', touchAction: 'none' }}
@@ -251,7 +260,7 @@ export default function VirtualTour({ scenes, initialSceneId }: VirtualTourProps
                 </div>
               </Html>
             }>
-              <Dome imagePath={scene.imagePath} />
+              <Dome imagePath={scene.imagePath} segments={sphereSegments} />
             </TextureErrorBoundary>
             
             {/* Render semua hotspot secara dinamis */}

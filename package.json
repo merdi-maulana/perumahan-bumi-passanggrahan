@@ -5,8 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "build:static": "cross-env STATIC_EXPORT=1 next build",
+    "start": "next start -H 0.0.0.0",
+    "lint": "eslint",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -22,6 +28,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
